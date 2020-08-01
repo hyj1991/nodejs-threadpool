@@ -30,6 +30,7 @@ class ThreadPool {
         this.workerQueue = [];
         // 线程池中的线程数
         let { count } = options;
+        // 这里可以改成增量新增线程
         while(count--) {
             const worker = new Worker(path.resolve(__dirname, 'worker.js'), {workerData: {sync: options.sync}});
             const node = {
