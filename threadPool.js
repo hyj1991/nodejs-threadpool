@@ -110,7 +110,7 @@ class ThreadPool {
             case DISPATCH_POLICY.RANDOM:
                 return this.workerQueue[~~(Math.random() * this.workerQueue.length)];
             case DISPATCH_POLICY.IN_TURN:
-                return this.workerQueue[++this.lastSelectThread];
+                return this.workerQueue[++this.lastSelectThread % this.workerQueue.length];
             default: return this.workerQueue[0];
         }
     }
