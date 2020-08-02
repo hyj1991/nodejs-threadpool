@@ -1,7 +1,7 @@
 # nodejs-threadpool
 基于nodejs worker_threads的线程池。
 
-目前是基于文件执行的代码的模式，和使用worker_threads一样。文件需要导出一个async函数。
+目前是基于文件执行的模式，和使用worker_threads一样。文件需要导出一个async函数。
 功能
     <br/> 1 提供串行和并行两种模式，即单个子线程里处理任务时，是串行还是并行处理
     <br/> 2 任务分配时，支持随机、轮询、繁忙度三种策略。
