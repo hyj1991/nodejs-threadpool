@@ -1,5 +1,5 @@
-const { submitToAsyncPool } = require('../../threadPool');
+const { defaultAsyncThread } = require('../../threadPool');
 const path = require('path');
-submitToAsyncPool(path.resolve(__dirname, 'async_1.js'));
+defaultAsyncThread.submit(path.resolve(__dirname, 'async_1.js'), {name: 1});
 
-submitToAsyncPool(path.resolve(__dirname, 'async_2.js'));
+defaultAsyncThread.submit(path.resolve(__dirname, 'async_2.js'), {name: 2}); 

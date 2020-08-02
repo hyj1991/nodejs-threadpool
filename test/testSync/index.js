@@ -1,5 +1,5 @@
-const { submitToSyncPool } = require('../../threadPool');
+const { defaultSyncThread } = require('../../threadPool');
 const path = require('path');
-submitToSyncPool(path.resolve(__dirname, '1.js'));
+defaultSyncThread.submit(path.resolve(__dirname, 'sync_1.js'), {name: 1});
 
-submitToSyncPool(path.resolve(__dirname, '2.js'));
+defaultSyncThread.submit(path.resolve(__dirname, 'sync_2.js'), {name: 2}); 
