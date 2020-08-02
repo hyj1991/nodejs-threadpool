@@ -37,7 +37,6 @@ class ThreadPool {
         this.options = options;
         this.workerQueue = [];
         this.lastSelectThread = -1;
-        this.init();
     }
     init() {
         if (this.workerQueue.length) {
@@ -109,7 +108,7 @@ class ThreadPool {
                 }
                 return this.workerQueue[min];
             case DISPATCH_POLICY.RANDOM:
-                return ~~(Math.random() * this.workerQueue.length);
+                return this.workerQueue[~~(Math.random() * this.workerQueue.length)];
             case DISPATCH_POLICY.IN_TURN:
                 return this.workerQueue[++this.lastSelectThread];
             default: return this.workerQueue[0];
@@ -118,6 +117,7 @@ class ThreadPool {
 
     // 给线程池提交一个任务
     submit(filename, options = {}) {
+        this.init();
         const id = ++workId;
         // 新建一个work，交给对应的子线程
         const work = new Work({ workId: id, filename, options });
@@ -126,6 +126,10 @@ class ThreadPool {
         thread.worker.postMessage(work);
         // 新建一个Mywork，让用户以为自己在使用一个线程
         return new MyWorker({workId: id, threadId: thread.worker.threadId});
+    }
+
+    setOptions(options) {
+        this.options = {...this.options, ...options};
     }
 }
 
