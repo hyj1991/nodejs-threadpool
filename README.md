@@ -23,7 +23,7 @@ const { defaultSyncThread } = require('../../threadPool');
 const path = require('path');
 defaultSyncThread.submit(path.resolve(__dirname, 'sync_1.js'), {name: 1});
 ```
-async_1
+async_1.js
 ```
 module.exports = async function() {
     return await new Promise((resolve) => {
