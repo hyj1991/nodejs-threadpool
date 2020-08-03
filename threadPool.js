@@ -1,6 +1,7 @@
 const { Worker } = require('worker_threads');
 const path = require('path');
 const { EventEmitter } = require('events');
+const { config } = require('process');
 
 // 任务id
 let workId = 0;
@@ -37,60 +38,73 @@ class ThreadPool {
         this.options = options;
         this.workerQueue = [];
         this.lastSelectThread = -1;
+        this.totalWork = 0;
+        this.max_threads = Math.max(options.count, 50);
     }
     init() {
         if (this.workerQueue.length) {
             return;
         }
-        let { count, sync } = this.options;
+        let { count } = this.options;
         // 这里可以改成增量新增线程
         while(count--) {
-            const worker = new Worker(path.resolve(__dirname, 'worker.js'), {workerData: { sync }});
-            const node = {
-                worker,
-                // 该线程处理的任务数量
-                queueLength: 0,
-            };
-            this.workerQueue.push(node);
-            worker.on('exit', (status) => {
-                // 异常退出则补充线程，正常退出则不补充
-                if (status) {
-                    this.workerQueue.push({
-                        worker: new Worker(path.resolve(__dirname, 'worker.js'), {workerData: { sync }}),
-                        queueLength: 0,
-                    });
-                }
-            });
-            // 和子线程通信
-            worker.on('message', (result) => {
-                const {
-                    work,
-                    event,
-                } = result;
-                const { data, error, workId } = work;
-                // 通过workId拿到对应的myWorker
-                const myWorker = workPool[workId];
-                delete workPool[workId];
-                // 任务数减一
-                node.queueLength--;
-                switch(event) {
-                    case 'done':
-                        // 通知用户，任务完成
-                        myWorker.emit('message', data);
-                        break;
-                    case 'error':
-                        // 通知用户，任务出错
-                        if (EventEmitter.listenerCount(myWorker).length) {
-                            myWorker.emit('error', error);
-                        }
-                        break;
-                    default: break;
-                }
-            });
-            worker.on('error', (...rest) => {
-                console.log(...rest)
-            });
+            this.newThread();
         }
+    }
+
+    newThread() {
+        let { sync } = this.options;
+        const worker = new Worker(path.resolve(__dirname, 'worker.js'), {workerData: { sync }});
+        const node = {
+            worker,
+            // 该线程处理的任务数量
+            queueLength: 0,
+        };
+        this.workerQueue.push(node);
+        const threadId = worker.threadId;
+        worker.on('exit', (status) => {
+            // 异常退出则补充线程，正常退出则不补充
+            if (status) {
+                this.workerQueue.push({
+                    worker: new Worker(path.resolve(__dirname, 'worker.js'), {workerData: { sync }}),
+                    queueLength: 0,
+                });
+            }
+            this.totalWork -= node.queueLength;
+            this.workerQueue = this.workerQueue.filter((worker) => {
+                return worker.threadId !== threadId;
+            });
+        });
+        // 和子线程通信
+        worker.on('message', (result) => {
+            const {
+                work,
+                event,
+            } = result;
+            const { data, error, workId } = work;
+            // 通过workId拿到对应的myWorker
+            const myWorker = workPool[workId];
+            delete workPool[workId];
+            // 任务数减一
+            node.queueLength--;
+            this.totalWork--;
+            switch(event) {
+                case 'done':
+                    // 通知用户，任务完成
+                    myWorker.emit('message', data);
+                    break;
+                case 'error':
+                    // 通知用户，任务出错
+                    if (EventEmitter.listenerCount(myWorker).length) {
+                        myWorker.emit('error', error);
+                    }
+                    break;
+                default: break;
+            }
+        });
+        worker.on('error', (...rest) => {
+            console.log(...rest)
+        });
     }
     selectThead() {
          // 线程池中的线程数
@@ -122,7 +136,12 @@ class ThreadPool {
         // 新建一个work，交给对应的子线程
         const work = new Work({ workId: id, filename, options });
         const thread = this.selectThead();
+        // 过载则增加线程
+        if (this.totalWork / this.workerQueue.length > 3 && this.workerQueue.length < this.max_threads) {
+            this.newThread();
+        }
         thread.queueLength++;
+        this.totalWork++;
         thread.worker.postMessage(work);
         // 新建一个Mywork，让用户以为自己在使用一个线程
         return new MyWorker({workId: id, threadId: thread.worker.threadId});
