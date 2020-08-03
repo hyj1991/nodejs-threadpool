@@ -137,7 +137,7 @@ class ThreadPool {
         const work = new Work({ workId: id, filename, options });
         const thread = this.selectThead();
         // 过载则增加线程
-        if (this.totalWork / this.workerQueue.length > 3 && this.workerQueue.length < this.max_threads) {
+        if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.max_threads) {
             this.newThread();
         }
         thread.queueLength++;
