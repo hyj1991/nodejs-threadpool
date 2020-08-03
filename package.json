@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-threadpool",
+  "version": "1.0.1",
+  "description": "基于nodejs worker_threads的线程池。",
+  "main": "threadPool.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "standard-version": "^8.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theanarkh/nodejs-threadpool.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/theanarkh/nodejs-threadpool/issues"
+  },
+  "homepage": "https://github.com/theanarkh/nodejs-threadpool#readme"
+}
