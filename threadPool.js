@@ -39,15 +39,15 @@ class ThreadPool {
         this.workerQueue = [];
         this.lastSelectThread = -1;
         this.totalWork = 0;
-        this.max_threads = Math.max(options.count, 50);
+        this.maxThreads = Math.max(options.defaultThreads, 50);
     }
     init() {
         if (this.workerQueue.length) {
             return;
         }
-        let { count } = this.options;
+        let { defaultThreads } = this.options;
         // 这里可以改成增量新增线程
-        while(count--) {
+        while(defaultThreads--) {
             this.newThread();
         }
     }
@@ -137,7 +137,7 @@ class ThreadPool {
         const work = new Work({ workId: id, filename, options });
         const thread = this.selectThead();
         // 过载则增加线程
-        if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.max_threads) {
+        if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.maxThreads) {
             this.newThread();
         }
         thread.queueLength++;
@@ -154,13 +154,13 @@ class ThreadPool {
 
 class AsyncThreadPool extends ThreadPool {
     constructor() {
-        super({sync: false, count: 10});
+        super({sync: false, defaultThreads: 10});
     }
 }
 
 class SyncThreadPool extends ThreadPool {
     constructor() {
-        super({sync: true, count: 10});
+        super({sync: true, defaultThreads: 10});
     }
 }
 

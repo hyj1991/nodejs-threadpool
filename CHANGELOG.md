@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* 支持过载时自动拓展线程数 \n 如果任务繁重，则根据配置，动态增加线程，如果每个平均超过3个任务则新增线程 \n ([e7e3fb4](https://github.com/theanarkh/nodejs-threadpool/commit/e7e3fb47f080b6c57d7520c51b02b9065886c2f2))
+* 支持过载时自动拓展线程数， 如果任务繁重，则根据配置，动态增加线程，如果每个平均超过3个任务则新增线程 ([e7e3fb4](https://github.com/theanarkh/nodejs-threadpool/commit/e7e3fb47f080b6c57d7520c51b02b9065886c2f2))
 * **threadPool:** 修改配置 ([bc1346b](https://github.com/theanarkh/nodejs-threadpool/commit/bc1346bbd0a8e79bbb4a4b58125a19cd5bfe2521))
 
 ### 1.0.1 (2020-08-03)
