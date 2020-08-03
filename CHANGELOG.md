@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/theanarkh/nodejs-threadpool/compare/v1.1.0...v1.2.0) (2020-08-03)
+
+
+### Features
+
+* **threadPool:** 修改变量名称 ([f54ece1](https://github.com/theanarkh/nodejs-threadpool/commit/f54ece128e8f560ad2561ee7794d61e906bc270a))
+
 ## [1.1.0](https://github.com/theanarkh/nodejs-threadpool/compare/v1.0.1...v1.1.0) (2020-08-03)
 
 
