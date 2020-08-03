@@ -95,7 +95,7 @@ class ThreadPool {
                     break;
                 case 'error':
                     // 通知用户，任务出错
-                    if (EventEmitter.listenerCount(myWorker).length) {
+                    if (EventEmitter.listenerCount(myWorker, 'error')) {
                         myWorker.emit('error', error);
                     }
                     break;
@@ -113,14 +113,16 @@ class ThreadPool {
             case DISPATCH_POLICY.DEFAULT:
                 let min = Number.MAX_SAFE_INTEGER;
                 let i = 0;
+                let index = 0;
                 // 找出任务数最少的线程，把任务交给他
                 for (; i < this.workerQueue.length; i++) {
                     const { queueLength } = this.workerQueue[i];
                     if (queueLength < min) {
-                        min = i;
+                        index = i;
+                        min = queueLength;
                     }
                 }
-                return this.workerQueue[min];
+                return this.workerQueue[index];
             case DISPATCH_POLICY.RANDOM:
                 return this.workerQueue[~~(Math.random() * this.workerQueue.length)];
             case DISPATCH_POLICY.IN_TURN:
@@ -140,6 +142,7 @@ class ThreadPool {
         if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.maxThreads) {
             this.newThread();
         }
+        
         thread.queueLength++;
         this.totalWork++;
         thread.worker.postMessage(work);

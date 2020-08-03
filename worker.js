@@ -36,7 +36,7 @@ function poll() {
                     work.data = result;
                     parentPort.postMessage({event: 'done', work});
                 } catch (error) {
-                    work.error = JSON.stringify(error);
+                    work.error = error.toString();
                     parentPort.postMessage({event: 'error', work});
                 }
             }
@@ -52,7 +52,7 @@ function poll() {
                     }
                     arr.push({asyncFunction, work});
                 } catch (error) {
-                    work.error = JSON.stringify(error);
+                    work.error = error.toString();
                     parentPort.postMessage({event: 'error', work});
                 }
             }
@@ -64,7 +64,7 @@ function poll() {
                     work.data = result;
                     parentPort.postMessage({event: 'done', work});
                 } catch (e) {
-                    work.error = JSON.stringify(e);
+                    work.error = error.toString();
                     parentPort.postMessage({event: 'done', work});
                 }
             })
