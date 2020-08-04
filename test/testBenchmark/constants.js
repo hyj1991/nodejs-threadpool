@@ -1,5 +1,5 @@
-const MAX = 2000000;
 
 module.exports = {
-    MAX,
+    MAX: 2000000,
+    REQ_COUNT: 50,
 }

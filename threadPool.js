@@ -40,6 +40,7 @@ class ThreadPool {
         this.lastSelectThread = -1;
         this.totalWork = 0;
         this.maxThreads = Math.max(options.defaultThreads, 50);
+        options.init && this.init();
     }
     init() {
         if (this.workerQueue.length) {
@@ -142,7 +143,6 @@ class ThreadPool {
         if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.maxThreads) {
             this.newThread();
         }
-        
         thread.queueLength++;
         this.totalWork++;
         thread.worker.postMessage(work);
