@@ -34,3 +34,15 @@ module.exports = async function() {
     })
 }
 ```
+
+性能测试
+1 并发数一样的情况下，不同耗时的任务，平均的处理时间（时间少的为多线程）
+![](https://img-blog.csdnimg.cn/2020080416313714.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RIRUFOQVJLSA==,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/2020080416315928.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RIRUFOQVJLSA==,size_16,color_FFFFFF,t_70)
+并发数一样的情况下，越耗时的操作，线程池的好处越明显。
+2 相同耗时的情况下，不同并发数对处理时间的影响
+![](https://img-blog.csdnimg.cn/2020080416322012.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RIRUFOQVJLSA==,size_16,color_FFFFFF,t_70)
+耗时一样的情况下，并发数越大，多线程的好处越明显。
+3 相同并发数和任务的情况下，线程数对处理时间的影响
+![](https://img-blog.csdnimg.cn/20200804163235798.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1RIRUFOQVJLSA==,size_16,color_FFFFFF,t_70)
+线程越多，不一样性能越好。

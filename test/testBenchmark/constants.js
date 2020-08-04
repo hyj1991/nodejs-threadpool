@@ -1,5 +1,5 @@
 
 module.exports = {
-    MAX: 2000000,
-    REQ_COUNT: 50,
+    MAX: 640000,
+    ROUND: 5,
 }
