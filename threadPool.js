@@ -1,7 +1,7 @@
 const { Worker } = require('worker_threads');
 const path = require('path');
 const { EventEmitter } = require('events');
-const { config } = require('process');
+const os = require('os');
 
 // 任务id
 let workId = 0;
@@ -167,13 +167,22 @@ class SyncThreadPool extends ThreadPool {
     }
 }
 
+class CPUThreadPool extends ThreadPool {
+    constructor() {
+        const cores = os.cpus().length;
+        super({sync: true, defaultThreads: cores});
+    }
+}
+
 const defaultSyncThread = new SyncThreadPool();
 const defaultAsyncThread = new AsyncThreadPool();
-
+const defaultCpuThread = new CPUThreadPool();
 module.exports = {
     AsyncThreadPool,
     SyncThreadPool,
+    CPUThreadPool,
     defaultAsyncThread,
     defaultSyncThread, 
+    defaultCpuThread,
     DISPATCH_POLICY,
 }
