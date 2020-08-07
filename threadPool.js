@@ -40,6 +40,7 @@ class ThreadPool {
         this.lastSelectThread = -1;
         this.totalWork = 0;
         this.maxThreads = Math.min(options.defaultThreads, 50);
+        ths.type = options.type;
         options.init && this.init();
     }
     init() {
@@ -140,7 +141,7 @@ class ThreadPool {
         const work = new Work({ workId: id, filename, options });
         const thread = this.selectThead();
         // 过载则增加线程
-        if (this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.maxThreads) {
+        if (ths.type !== 'cpu' && this.totalWork / this.workerQueue.length > 5 && this.workerQueue.length < this.maxThreads) {
             this.newThread();
         }
         thread.queueLength++;
@@ -170,7 +171,7 @@ class SyncThreadPool extends ThreadPool {
 class CPUThreadPool extends ThreadPool {
     constructor() {
         const cores = os.cpus().length;
-        super({sync: true, defaultThreads: cores});
+        super({sync: true, defaultThreads: cores,, type: 'cpu'});
     }
 }
 
