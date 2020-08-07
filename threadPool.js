@@ -39,7 +39,7 @@ class ThreadPool {
         this.workerQueue = [];
         this.lastSelectThread = -1;
         this.totalWork = 0;
-        this.maxThreads = Math.max(options.defaultThreads, 50);
+        this.maxThreads = Math.min(options.defaultThreads, 50);
         options.init && this.init();
     }
     init() {
