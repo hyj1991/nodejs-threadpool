@@ -1,6 +1,6 @@
 {
   "name": "nodejs-thread-pool",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "基于nodejs worker_threads的线程池。",
   "main": "src/index.js",
   "directories": {
