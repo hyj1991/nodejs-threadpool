@@ -40,7 +40,7 @@ class ThreadPool {
         this.lastSelectThread = -1;
         this.totalWork = 0;
         this.maxThreads = Math.min(options.defaultThreads, 50);
-        ths.type = options.type;
+        this.type = options.type;
         options.init && this.init();
     }
     init() {
