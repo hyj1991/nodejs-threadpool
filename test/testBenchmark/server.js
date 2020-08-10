@@ -1,5 +1,5 @@
 const http = require('http');
-const { defaultSyncThread } = require('../../threadPool');
+const { defaultSyncThread } = require('../../src').threadPool;
 const path = require('path');
 
 http.createServer(function(req, res) {
