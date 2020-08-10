@@ -1,4 +1,4 @@
-const { defaultSyncThread } = require('../../threadPool');
+const { defaultSyncThread } = require('../../src').threadPool;
 const path = require('path');
 defaultSyncThread.submit(path.resolve(__dirname, 'sync_1.js'), {name: 1});
 

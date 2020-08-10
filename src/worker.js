@@ -2,16 +2,18 @@ const { parentPort, workerData } = require('worker_threads');
 const { sync } = workerData;
 const queue = [];
 const toString = Object.prototype.toString;
-function isAsyncFunction(obj) {
-    return toString.call(obj) === '[object AsyncFunction]';
-}
 const MAX_IDLE_TIME = 10 * 60 * 1000;
 const POLL_INTERVAL_TIME = 10;
 let lastWorkTime = Date.now();
-
+const  { isAsyncFunction } = require('./utils');
 // 监听主线程提交过来的任务
-parentPort.on('message', (work) => {
-    queue.push(work);
+parentPort.on('message', ({cmd, work}) => {
+    switch(cmd) {
+        case 'remove':
+            return queue.unshift();
+        case 'add':
+            return queue.push(work);
+    }
 });
 
 function poll() {
