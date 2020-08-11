@@ -32,15 +32,11 @@ class ThreadPool {
         this.lastSelectThread = -1;
         this.coreThreads = ~~options.coreThreads || config.CORE_THREADS;
         // 线程池最大线程数
-        this.maxThreads = Math.max(this.coreThreads, config.MAX_THREADS);
+        this.maxThreads = options.expansion !== false ? Math.max(this.coreThreads, config.MAX_THREADS) : this.coreThreads;
         // 线程池类型
         this.type = options.type && THREAD_POOL_TYPE[options.type] ? options.type : THREAD_POOL_TYPE.MIXED;
-        // 是否支持动态扩容
-        this.expansion = options.expansion !== false;
         // 工作线程处理任务的模式
         this.sync = options.sync !== false;
-        // 子线程最大任务队列
-        this.maxWorkQueue = ~~options.maxWorkQueue || Infinity;
         // 超过任务队列长度时的处理策略
         this.discardPolicy = options.discardPolicy && DISCARD_POLICY[options.discardPolicy] ? options.discardPolicy : DISCARD_POLICY.DISCARD;
         // 是否预创建子线程
@@ -157,11 +153,11 @@ class ThreadPool {
                 // 子线程个数还没有达到核心线程数，则新建线程处理
                 if (this.workerQueue.length < this.coreThreads) {
                     thread = this.newThread();
-                } else {
-                    // 子线程数已经达到核心线程数
-                    const total = this.totalWork + 1;
+                } else if (this.totalWork + 1 > config.MAX_WORK){
                     // 总任务数已达到阈值
-                    if(total > config.MAX_WORK) {
+                    if(this.workerQueue.length < this.maxThreads) {
+                        thread = this.newThread();
+                    } else {
                         // 处理溢出的任务
                         switch(this.discardPolicy) {
                             case DISCARD_POLICY.ABORT: 
@@ -191,9 +187,6 @@ class ThreadPool {
                             case DISCARD_POLICY.DISCARD:
                                 return reject(new Error('discard'));
                         }
-                    } else if (this.expansion){
-                        // 子线程数还没有得到阈值，则新建线程
-                        thread = this.newThread();
                     }
                 }
             }
