@@ -10,11 +10,11 @@ const  { isAsyncFunction } = require('./utils');
 let workId = 0;
 // 记录任务对应的Myworker对象
 const workPool = {};
-
-// 提供给用户的接口，对于用户来说，他看到的是一个任务对应一个线程（worker）
-class FakeWorker extends EventEmitter {
-    constructor({ workId , threadId}) {
+// 提供给用户的接口
+class UserWork extends EventEmitter {
+    constructor({ workId, threadId }) {
         super();
+        this.workId = workId;
         this.threadId = threadId;
         workPool[workId] = this;
     }
@@ -163,21 +163,21 @@ class ThreadPool {
                             case DISCARD_POLICY.ABORT: 
                                 return reject(new Error('queue overflow'));
                             case DISCARD_POLICY.CALLER_RUNS: 
-                                const fakeWorker =  new FakeWorker({workId: this.generateWorkId(), threadId: threadId}); 
+                                const userWork =  new UserWork({workId: this.generateWorkId(), threadId}); 
                                 try {
                                     const asyncFunction = require(filename);
                                     if (!isAsyncFunction(asyncFunction)) {
                                         return reject(new Error('need export a async function'));
                                     }
                                     const result = await asyncFunction(options);
-                                    resolve(fakeWorker);
+                                    resolve(userWork);
                                     process.nextTick(() => {
-                                        fakeWorker.emit('message', result);
+                                        userWork.emit('message', result);
                                     });
                                 } catch (error) {
-                                    resolve(fakeWorker);
+                                    resolve(userWork);
                                     process.nextTick(() => {
-                                        fakeWorker.emit('error', error);
+                                        userWork.emit('error', error);
                                     });
                                 }
                                 return;
@@ -198,7 +198,7 @@ class ThreadPool {
             this.totalWork++;
             thread.worker.postMessage({cmd: 'add', work});
             // 新建一个Mywork，让用户以为自己在使用一个线程
-            resolve(new FakeWorker({workId, threadId: thread.worker.threadId}));
+            resolve(new UserWork({workId, threadId: thread.worker.threadId}));
         })
     }
 }

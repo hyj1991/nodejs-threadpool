@@ -1,11 +1,12 @@
 const { parentPort, workerData } = require('worker_threads');
 const { sync } = workerData;
 const queue = [];
-const toString = Object.prototype.toString;
-const MAX_IDLE_TIME = 10 * 60 * 1000;
-const POLL_INTERVAL_TIME = 10;
+const {
+    MAX_IDLE_TIME,
+    POLL_INTERVAL_TIME,
+} = require('./config');
+const { isAsyncFunction } = require('./utils');
 let lastWorkTime = Date.now();
-const  { isAsyncFunction } = require('./utils');
 // 监听主线程提交过来的任务
 parentPort.on('message', ({cmd, work}) => {
     switch(cmd) {
