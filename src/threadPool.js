@@ -197,7 +197,6 @@ class ThreadPool {
             thread.queueLength++;
             this.totalWork++;
             thread.worker.postMessage({cmd: 'add', work});
-            // 新建一个Mywork，让用户以为自己在使用一个线程
             resolve(new UserWork({workId, threadId: thread.worker.threadId}));
         })
     }
