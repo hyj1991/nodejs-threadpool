@@ -2,7 +2,7 @@ const { defaultSyncThread, defaultAsyncThread } = require('../../src').threadPoo
 const path = require('path');
 async function test() {
     const worker = await defaultSyncThread.submit(path.resolve(__dirname, 'event.js'));
-    worker.on('message', function() {
+    worker.on('done', function() {
         console.log(...arguments)
     })
 
@@ -11,7 +11,7 @@ async function test() {
     })
 
     const asyncWorker = await defaultAsyncThread.submit(path.resolve(__dirname, 'event.js'));
-    asyncWorker.on('message', function() {
+    asyncWorker.on('done', function() {
         console.log('async', ...arguments)
     })
 

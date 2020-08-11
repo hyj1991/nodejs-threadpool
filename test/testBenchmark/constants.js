@@ -1,5 +1,5 @@
 
 module.exports = {
-    MAX: 640000,
+    MAX: 10000,
     ROUND: 5,
 }

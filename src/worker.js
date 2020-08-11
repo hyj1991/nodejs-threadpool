@@ -1,17 +1,17 @@
 const { parentPort, workerData } = require('worker_threads');
-const { sync } = workerData;
+const { 
+    sync,
+    maxIdleTime,
+    pollIntervalTime,
+ } = workerData;
 const queue = [];
-const {
-    MAX_IDLE_TIME,
-    POLL_INTERVAL_TIME,
-} = require('./config');
 const { isAsyncFunction } = require('./utils');
 let lastWorkTime = Date.now();
 // 监听主线程提交过来的任务
 parentPort.on('message', ({cmd, work}) => {
     switch(cmd) {
-        case 'remove':
-            return queue.unshift();
+        case 'delete':
+            return queue.shift();
         case 'add':
             return queue.push(work);
     }
@@ -19,7 +19,7 @@ parentPort.on('message', ({cmd, work}) => {
 
 function poll() {
     const now = Date.now();
-    if (now - lastWorkTime > MAX_IDLE_TIME && !queue.length) {
+    if (now - lastWorkTime > maxIdleTime && !queue.length) {
         process.exit(0);
     }
     setTimeout(async () => {
@@ -74,7 +74,7 @@ function poll() {
         }
         
         poll();
-    }, POLL_INTERVAL_TIME);
+    }, pollIntervalTime);
 }
 // 轮询判断是否有任务
 poll();
