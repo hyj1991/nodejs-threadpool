@@ -21,6 +21,14 @@ class UserWork extends EventEmitter {
         workPool[workId] = this;
     }
 }
+class Node {
+    constructor({worker}) {
+        // nodejs的Worker对象
+        this.worker = worker;
+        // 该线程处理的任务数量
+        this.queueLength = 0;
+    }
+}
 
 // 线程池基类
 class ThreadPool {
@@ -57,11 +65,7 @@ class ThreadPool {
     newThread() {
         let { sync } = this;
         const worker = new Worker(workerPath, {workerData: { sync, maxIdleTime: this.maxIdleTime, pollIntervalTime: this.pollIntervalTime, }});
-        const node = {
-            worker,
-            // 该线程处理的任务数量
-            queueLength: 0,
-        };
+        const node = new Node({worker});
         this.workerQueue.push(node);
         const threadId = worker.threadId;
         worker.on('exit', (status) => {
@@ -70,7 +74,7 @@ class ThreadPool {
                 this.newThread();
             }
             this.totalWork -= node.queueLength;
-            this.workerQueue = this.workerQueue.filter((worker) => {
+            this.workerQueue = this.workerQueue.filter(({worker}) => {
                 return worker.threadId !== threadId;
             });
         });

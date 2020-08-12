@@ -1,5 +1,5 @@
 
-module.exports = async function() {ss
+module.exports = async function() {
     return await new Promise((resolve) => {
         setTimeout(() => {
             resolve({type: 'async'})
