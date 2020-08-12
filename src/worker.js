@@ -1,4 +1,5 @@
 const { parentPort, workerData } = require('worker_threads');
+const vm = require('vm');
 const { 
     sync,
     maxIdleTime,
@@ -6,6 +7,7 @@ const {
  } = workerData;
 const queue = [];
 const { isAsyncFunction } = require('./utils');
+const jsFileRegexp = /\.js$/;
 let lastWorkTime = Date.now();
 // 监听主线程提交过来的任务
 parentPort.on('message', ({cmd, work}) => {
@@ -29,7 +31,13 @@ function poll() {
                 const work = queue.shift();
                 try {
                     const { filename, options } = work;
-                    const asyncFunction = require(filename);
+                    let asyncFunction
+                    if (jsFileRegexp.test(filename)) {
+                        asyncFunction  = require(filename);
+                    } else {
+                        asyncFunction = vm.runInThisContext(`(${filename})`);
+                    }
+                    
                     if (!isAsyncFunction(asyncFunction)) {
                         return;
                     }
@@ -49,7 +57,12 @@ function poll() {
                 const work = queue.shift();
                 try {
                     const { filename } = work;
-                    const asyncFunction = require(filename);
+                    let asyncFunction
+                    if (jsFileRegexp.test(filename)) {
+                        asyncFunction = require(filename);
+                    } else {
+                        asyncFunction = vm.runInThisContext(`(${filename})`);
+                    }
                     if (!isAsyncFunction(asyncFunction)) {
                         return;
                     }
