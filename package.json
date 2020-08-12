@@ -1,6 +1,6 @@
 {
   "name": "nodejs-thread-pool",
-  "version": "0.0.3",
+  "version": "1.0.4",
   "description": "基于nodejs worker_threads的线程池。",
   "main": "src/index.js",
   "directories": {
@@ -25,7 +25,6 @@
   },
   "homepage": "https://github.com/theanarkh/nodejs-threadpool#readme",
   "files": [
-    "threadPool.js",
-    "worker.js"
+    "src"
   ]
 }
