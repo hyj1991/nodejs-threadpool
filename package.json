@@ -1,6 +1,6 @@
 {
   "name": "nodejs-thread-pool",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "基于nodejs worker_threads的线程池。",
   "main": "src/index.js",
   "directories": {
@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/theanarkh/nodejs-threadpool.git"
   },
-  "author": "",
+  "author": "theanarkh",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/theanarkh/nodejs-threadpool/issues"

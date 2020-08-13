@@ -36,21 +36,20 @@ class FixedThreadPool extends ThreadPool {
     }
 }
 
-const defaultSyncThread = new SyncThreadPool();
-const defaultAsyncThread = new AsyncThreadPool();
-const defaultCpuThread = new CPUThreadPool();
+const defaultSyncThreadPool = new SyncThreadPool();
+const defaultAsyncThreadPool = new AsyncThreadPool();
+const defaultCpuThreadPool = new CPUThreadPool();
 const defaultFixedThreadPool = new FixedThreadPool();
 const defaultSingleThreadPool = new SingleThreadPool();
-
 module.exports = {
     AsyncThreadPool,
     SyncThreadPool,
     CPUThreadPool,
     FixedThreadPool,
     SingleThreadPool,
-    defaultAsyncThread,
-    defaultSyncThread, 
-    defaultCpuThread,
+    defaultAsyncThreadPool,
+    defaultSyncThreadPool, 
+    defaultCpuThreadPool,
     defaultFixedThreadPool,
     defaultSingleThreadPool,
 }
@@ -87,7 +86,7 @@ submit：入参filename,为要支持的文件，options为支持文件时传入�
 例子1
 index.js
 ```cpp
-const { defaultSyncThread } = require('../../src').threadPool;
+const { defaultSyncThreadPool } = require('nodejs-thread-pool').threadPool;
 const path = require('path');
 async function test() {
 	const worker = await defaultSyncThread.submit(path.resolve(__dirname, 'event.js'));
@@ -115,7 +114,7 @@ module.exports = async function() {
 ```
 例子2
 ```
-const { defaultSyncThread } = require('../../src').threadPool;
+const { defaultSyncThreadPool } = require('nodejs-thread-pool').threadPool;
 const path = require('path');
 async function test() {
     const work1 = await defaultSyncThread.submit('async function({a, b}) { return a + b; }', {a: 1, b: 1});
