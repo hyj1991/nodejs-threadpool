@@ -1,11 +1,11 @@
-const { defaultSyncThread } = require('../../src').threadPool;
+const { defaultSyncThreadPool } = require('../../src').threadPool;
 const path = require('path');
 async function test() {
-    const work1 = await defaultSyncThread.submit('async function({a, b}) { return a + b; }', {a: 1, b: 1});
+    const work1 = await defaultSyncThreadPool.submit('async function({a, b}) { return a + b; }', {a: 1, b: 1});
     work1.on('done',  function() {
         console.log(...arguments);
     })
-    const work = await defaultSyncThread.submit(`async function(params) { return await new Promise((resolve) => {console.log(params); setTimeout(() => {resolve(1)}, 3000)})  }`, {name: 22}); 
+    const work = await defaultSyncThreadPool.submit(`async function(params) { return await new Promise((resolve) => {console.log(params); setTimeout(() => {resolve(1)}, 3000)})  }`, {name: 22}); 
     work.on('done', function() {
         console.log(...arguments);
     });

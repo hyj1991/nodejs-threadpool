@@ -1,9 +1,9 @@
 const http = require('http');
-const { defaultSyncThread } = require('../../src').threadPool;
+const { defaultSyncThreadPool } = require('../../src').threadPool;
 const path = require('path');
 
 http.createServer(async function(req, res) {
-    const worker = await defaultSyncThread.submit(path.resolve(__dirname, 'cal.js'));
+    const worker = await defaultSyncThreadPool.submit(path.resolve(__dirname, 'cal.js'));
     worker.on('done', function(ret) {
         res.end('ok');
     });

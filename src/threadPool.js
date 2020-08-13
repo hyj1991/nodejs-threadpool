@@ -229,9 +229,9 @@ class FixedThreadPool extends ThreadPool {
     }
 }
 
-const defaultSyncThread = new SyncThreadPool();
-const defaultAsyncThread = new AsyncThreadPool();
-const defaultCpuThread = new CPUThreadPool();
+const defaultSyncThreadPool = new SyncThreadPool();
+const defaultAsyncThreadPool = new AsyncThreadPool();
+const defaultCpuThreadPool = new CPUThreadPool();
 const defaultFixedThreadPool = new FixedThreadPool();
 const defaultSingleThreadPool = new SingleThreadPool();
 module.exports = {
@@ -240,9 +240,9 @@ module.exports = {
     CPUThreadPool,
     FixedThreadPool,
     SingleThreadPool,
-    defaultAsyncThread,
-    defaultSyncThread, 
-    defaultCpuThread,
+    defaultAsyncThreadPool,
+    defaultSyncThreadPool, 
+    defaultCpuThreadPool,
     defaultFixedThreadPool,
     defaultSingleThreadPool,
 }
