@@ -83,7 +83,8 @@ generateWorkId：产生任务id函数
 selectThead： 选择处理任务的函数，返回一个Node对象
 submit：入参filename,为要支持的文件，options为支持文件时传入的参数。返回一个Promise。resolve的时候是UserWork对象，reject的时候是一个Error对象。
 ```
-4 使用例子
+4 使用
+例子1
 index.js
 ```cpp
 const { defaultSyncThread } = require('../../src').threadPool;
@@ -111,4 +112,21 @@ module.exports = async function() {
         },3000)
     })
 } 
+```
+例子2
+```
+const { defaultSyncThread } = require('../../src').threadPool;
+const path = require('path');
+async function test() {
+    const work1 = await defaultSyncThread.submit('async function({a, b}) { return a + b; }', {a: 1, b: 1});
+    work1.on('done',  function() {
+        console.log(...arguments);
+    })
+    const work = await defaultSyncThread.submit(`async function(params) { return await new Promise((resolve) => {console.log(params); setTimeout(() => {resolve(1)}, 3000)})  }`, {name: 22}); 
+    work.on('done', function() {
+        console.log(...arguments);
+    });
+}
+
+test()
 ```
