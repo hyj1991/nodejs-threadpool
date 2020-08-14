@@ -6,7 +6,7 @@ const {
     pollIntervalTime,
  } = workerData;
 const queue = [];
-const { isAsyncFunction } = require('./utils');
+const { isFunction } = require('./utils');
 const jsFileRegexp = /\.js$/;
 let lastWorkTime = Date.now();
 // 监听主线程提交过来的任务
@@ -31,19 +31,19 @@ function poll() {
                 const work = queue.shift();
                 try {
                     const { filename, options } = work;
-                    let asyncFunction
+                    let aFunction;
                     if (jsFileRegexp.test(filename)) {
-                        asyncFunction  = require(filename);
+                        aFunction = require(filename);
                     } else {
-                        asyncFunction = vm.runInThisContext(`(${filename})`);
+                        aFunction = vm.runInThisContext(`(${filename})`);
                     }
                     
-                    if (!isAsyncFunction(asyncFunction)) {
-                        return;
+                    if (!isFunction(aFunction)) {
+                        continue;
                     }
                     lastWorkTime = now;
                     
-                    const result = await asyncFunction(options);
+                    const result = await aFunction(options);
                     work.data = result;
                     parentPort.postMessage({event: 'done', work});
                 } catch (error) {
@@ -57,26 +57,26 @@ function poll() {
                 const work = queue.shift();
                 try {
                     const { filename } = work;
-                    let asyncFunction
+                    let aFunction
                     if (jsFileRegexp.test(filename)) {
-                        asyncFunction = require(filename);
+                        aFunction = require(filename);
                     } else {
-                        asyncFunction = vm.runInThisContext(`(${filename})`);
+                        aFunction = vm.runInThisContext(`(${filename})`);
                     }
-                    if (!isAsyncFunction(asyncFunction)) {
-                        return;
+                    if (!isFunction(aFunction)) {
+                        continue;
                     }
-                    arr.push({asyncFunction, work});
+                    arr.push({aFunction, work});
                 } catch (error) {
                     work.error = error.toString();
                     parentPort.postMessage({event: 'error', work});
                 }
             }
-            arr.map(async ({asyncFunction, work}) => {
+            arr.map(async ({aFunction, work}) => {
                 try {
                     const { options } = work;
                     lastWorkTime = now;
-                    const result = await asyncFunction(options);
+                    const result = await aFunction(options);
                     work.data = result;
                     parentPort.postMessage({event: 'done', work});
                 } catch (e) {

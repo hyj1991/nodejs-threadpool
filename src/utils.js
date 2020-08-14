@@ -1,7 +1,6 @@
-const toString = Object.prototype.toString;
-function isAsyncFunction(obj) {
-    return toString.call(obj) === '[object AsyncFunction]';
+function isFunction(func) {
+    return typeof func === 'function';
 }
 module.exports = {
-    isAsyncFunction,
+    isFunction,
 };
