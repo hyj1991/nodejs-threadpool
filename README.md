@@ -1,7 +1,7 @@
 # nodejs-threadpool
 基于nodejs worker_threads的线程池。
 
-支持文件和字符串模式，需要导出一个async函数。
+支持文件和字符串模式，需要导出一个函数。
 
 1 默认提供的线程池类型
 ```cpp
